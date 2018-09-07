@@ -1,0 +1,41 @@
+version: '3'
+services:
+    statservice:
+      container_name: "statservice"
+      build:
+        context: ./stats_service
+        dockerfile: Dockerfile
+      user: "node"
+      volumes:
+        - ./stats_service/src:/home/node/app/src
+      networks:
+        - default
+      links:
+        - mongodb
+        - telegramservice
+      command: "npm start"
+
+    mongodb:
+      container_name: "mongodb"
+      image: mongo:latest
+      ports:
+        - 27018:27017
+      command: mongod --smallfiles --logpath=/dev/null # --quiet
+      networks:
+          - default
+
+    telegramservice:
+      container_name: "telegramservice"
+      build:
+        context: ./telegram_service
+        dockerfile: Dockerfile
+      user: "node"
+      environment:
+        - NODE_ENV=production
+      volumes:
+        - ./telegram_service/src:/home/node/app/src
+      expose:
+        - "8082"
+      ports:
+        - 8082:8082
+      command: "npm start"
