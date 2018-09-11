@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.post('/auth', async (req, res) => {
     try {
         let user = await userController.sign_in(req.body, '15m');
-        res.send(user);    
+        res.send(user);
 
     } catch (error) {
         res.status(401).send({'msg':'Unauthorized user'});

@@ -1,18 +1,11 @@
 const request = require('request');
-var token = '';
+const config = require('./config/telegram.json');
+let token = '';
 
-//Intel logger setup
-const intel = require('intel');
-const TelegramError = intel.getLogger('TelegramError');
-TelegramError.setLevel(TelegramError.ERROR).addHandler(new intel.handlers.File(__dirname + `/logs/error.log`));
-
-
-function auth()
-{
-    const config = require('./config/telegram.json');
+function auth() {
     const options = {
         method: 'POST',
-        url: 'http://telegramservice:8082/auth',
+        url: `http://${config.http_host}:${config.http_port}/auth`,
         form: {
             login: config.login,
             psw: config.psw
@@ -20,84 +13,59 @@ function auth()
         headers: [
             {
                 'name': 'Content-Type',
-                'value' : 'application/x-www-form-urlencoded'
+                'value': 'application/x-www-form-urlencoded'
             }
         ]
     };
     return new Promise(function (resolve, reject) {
         request(options, async (error, response, body) => {
-            if(error){
-                reject(error);
-                return TelegramError.error(`telegramControllet.auth Error: ${error}`);
-            } else if(response.statusCode === 200){
-
-                if (!body || body.length < 2) {
-                    reject(new Error(`Body empty : ${body}`));
-                    return TelegramError.error(`telegramControllet.auth Error: Body empty : ${body}`)
-                } else {
-                    body = JSON.parse(body) || {};
-                }
-
-                if (!body.token) {
-                    reject(new Error(`Error: token empty`));
-                    return TelegramError.error(`telegramControllet.auth Error: token empty`);
-                } else {
-                    resolve(body.token);
-                }
-            } else {
-                reject(new Error(`statusCode : ${response.statusCode}, message: ${response.statusMessage}`));
-                return TelegramError.error(`telegramControllet.auth Error: statusCode : ${response.statusCode}, message: ${response.statusMessage}`);
-            }
+            if (error)
+                return reject(error);
+            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200))
+                return reject(new Error(`Body : ${body}`));
+            body = JSON.parse(body) || {};
+            if (!body.token)
+                return reject(new Error(`Error: token empty`));
+            resolve(body.token);
         });
     });
-
 };
 
 function telegramSend(message)
 {
     return new Promise( (resolve, reject) => {
-        request.get('http://telegramservice:8082/message?content=' + message,
-            {headers: { 'authorization': 'JWT ' + token }},
-            (error, response, body) => {
-                if(error){
-                    return TelegramError.error(`telegramControllet.sendMess Error: ${error}`);
-                    reject(new Error(`telegramControllet.sendMess Error: ${error}`));
-                } else if(response.statusCode === 200){
-                    if (!body || body.length < 2) {
-                        reject(new Error(`telegramControllet.sendMess Error: Body empty : ${body}`));
-                    } else {
-                        resolve('success');
-                    }
-                } else if(response.statusCode === 401){
-                    reject('bad_auth');
-                } else {
-                    reject(new Error(`telegramControllet.sendMess Error: statusCode: ${response.statusCode}, message: ${response.statusMessage}`));
-                    return TelegramError.error(`telegramControllet.sendMess Error: statusCode: ${response.statusCode}, message: ${response.statusMessage}`);
-                }
+        request.get(`http://${config.http_host}:${config.http_port}/message?content=` + message,
+            {headers: { 'authorization': `JWT ${token}` }},
+            async (error, response, body) => {
+                if(error)
+                    return reject(error);
+
+                if(response.statusCode === 401)
+                    return reject('bad_auth');
+
+                if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200))
+                    return reject(new Error(`Body empty : ${body}`));
+
             });
     });
 }
 
-exports.sendMessage = function( message ) {
+exports.sendMessage = async function( message ) {
 
-    if(token){
-        let messagPromise = telegramSend(message);
-        messagPromise
+    try{
+        if(token === ''){
+            await auth()
+                .then( rezult => {
+                    token = rezult;
+                });
+        }
+        telegramSend(message)
             .catch( bad_auth => {
                 token = '';
                 this.sendMessage(message);
             });
-    } else {
-        let tokenPromis = auth();
-        tokenPromis
-            .then( rezToken => {
-                token = rezToken;
-            })
-            .then( token => {
-                this.sendMessage(message);
-        }).catch( error => {
-            console.log('-- telegram auth error ---', error);
-        });
+    } catch (error){
+        console.error(' - telegramController - ', error );
     }
 
 };
