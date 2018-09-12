@@ -43,7 +43,7 @@ function telegramSend(message)
     let url = `${config.telegramConnectionString}/message?content=` + message;
     return new Promise( (resolve, reject) => {
         request.get(url, {headers: { 'authorization': `JWT ${token}` }},
-            async (error, response, body) => {
+             (error, response, body) => {
                 if(error)
                     return reject(error);
 
@@ -69,12 +69,10 @@ exports.sendMessage = async function( message ) {
         }
         if(token !== ''){
             telegramSend(message)
-                .then( (bool) => {
+                .then( async (bool) => {
                     if(bool === false){
-                        auth().then( rezTok => {
-                            token = rezTok;
-                            telegramSend(message);
-                        });
+                        token = await auth();
+                        telegramSend(message);
                     }
                 });
         }
