@@ -23,15 +23,20 @@ const dbHotExchangeLib = require('./lib/mongodb/hot_exchange.js');
 const url = 'https://api.coinmarketcap.com/v1/ticker/';
 
 function parseAndSaveETHUSD() {
-    request.get(url + 'ethereum/?convert=USD',
+    let path = url + 'ethereum/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveETHUSD Error: ${error}`);
                 return StatsError.error(`parseAndSaveETHUSD Error: ${error}`);
             }
-            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveETHUSD Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveETHUSD Error: Body : ${body}`);
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveETHUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveETHUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveETHUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveETHUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -51,15 +56,24 @@ function parseAndSaveETHUSD() {
 }
 
 function parseAndSaveBTCUSD(){
-    request.get(url + 'bitcoin/?convert=USD',
+    let path = url + 'bitcoin/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveBTCUSD Error: ${error}`);
                 return StatsError.error(`parseAndSaveBTCUSD Error: ${error}`);
             }
-            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveBTCUSD Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveBTCUSD Error: Body : ${body}`);
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveBTCUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveBTCUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -77,15 +91,20 @@ function parseAndSaveBTCUSD(){
 }
 
 function parseAndSaveLTCUSD(){
-    request.get(url + 'litecoin/?convert=USD',
+    let path = url + 'litecoin/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveLTCUSD Error: ${error}`);
                 return StatsError.error(`parseAndSaveLTCUSD Error: ${error}`);
             }
-            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveLTCUSD Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveLTCUSD Error: Body : ${body}`);
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveLTCUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveLTCUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveLTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveLTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -103,15 +122,20 @@ function parseAndSaveLTCUSD(){
 }
 
 function parseAndSaveBTGUSD(){
-    request.get(url + 'bitcoin-gold/?convert=USD',
+    let path = url + 'bitcoin-gold/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveBTGUSD Error: ${error}`);
                 return StatsError.error(`parseAndSaveBTGUSD Error: ${error}`);
             }
-            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveBTGUSD Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveBTGUSD Error: Body : ${body}`);
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveBTGUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveBTGUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveBTGUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveBTGUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -129,15 +153,20 @@ function parseAndSaveBTGUSD(){
 }
 
 function parseAndSaveBCHUSD(){
-    request.get(url + 'bitcoin-cash/?convert=USD',
+    let path = url + 'bitcoin-cash/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveBCHUSD Error: ${error}`);
                 return StatsError.error(`parseAndSaveBCHUSD Error: ${error}`);
             }
-            if (!body || body.length < 2 || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveBCHUSD Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveBCHUSD Error: Body : ${body}`);
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveBCHUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveBCHUSD Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+            if (!body || body.length < 2) {
+                telegram.sendMessage(`parseAndSaveBCHUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveBCHUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -155,15 +184,22 @@ function parseAndSaveBCHUSD(){
 }
 
 function parseAndSaveUSDT() {
-    request.get(url.replace('/v1', '/v2') + '825/?convert=USD',
+    let path = url.replace('/v1', '/v2') + '825/?convert=USD';
+    request.get(path,
         async (error, response, body) => {
             if (error) {
                 telegram.sendMessage(`parseAndSaveUSDT Error: ${error}`);
                 return StatsError.error(`parseAndSaveUSDT Error: ${error}`);
             }
-            if (!body || (response.statusCode && response.statusCode !== 200)) {
-                telegram.sendMessage(`parseAndSaveUSDT Error: Body : ${body}`);
-                return StatsError.error(`parseAndSaveUSDT Error: Body : ${body}`);
+
+            if (response.statusCode && response.statusCode !== 200) {
+                telegram.sendMessage(`parseAndSaveUSDT Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+                return StatsError.error(`parseAndSaveUSDT Error: ${response.statusCode} : ${response.statusMessage}, path : ${path}`);
+            }
+
+            if (!body) {
+                telegram.sendMessage(`parseAndSaveUSDT Error: Body : ${JSON.stringify(JSON.parse(body))}`);
+                return StatsError.error(`parseAndSaveUSDT Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
             body = JSON.parse(body) || {};
 
@@ -182,7 +218,9 @@ function parseAndSaveUSDT() {
 }
 
 
+parseAndSaveETHUSD();
 
+/*
 setInterval( () => {
     parseAndSaveETHUSD();
     parseAndSaveBTCUSD();
@@ -191,4 +229,4 @@ setInterval( () => {
     parseAndSaveBCHUSD();
     parseAndSaveUSDT();
 }, 5000);
-
+*/
