@@ -1,5 +1,6 @@
 const request = require('request');
-const config = require('./config/telegram.json');
+const config_t = require('./config/telegram.json');
+const config = require('./config/config.json');
 let token = '';
 
 // Intel logger setup
@@ -8,13 +9,13 @@ const TelegramError = intel.getLogger('TelegramError');
 TelegramError.setLevel(TelegramError.ERROR).addHandler(new intel.handlers.File(__dirname + `/logs/error.log`));
 
 function auth() {
-    let url = `http://${config.http_host}:${config.http_port}/auth`;
+    let url = `${config.telegramConnectionString}/auth`;
     const options = {
         method: 'POST',
         url: url,
         form: {
-            login: config.login,
-            psw: config.psw
+            login: config_t.login,
+            psw: config_t.psw
         },
         headers: [{
                 'name': 'Content-Type',
@@ -37,10 +38,9 @@ function auth() {
         });
     });
 };
-
 function telegramSend(message)
 {
-    let url = `http://${config.http_host}:${config.http_port}/message?content=` + message;
+    let url = `${config.telegramConnectionString}/message?content=` + message;
     return new Promise( (resolve, reject) => {
         request.get(url, {headers: { 'authorization': `JWT ${token}` }},
             async (error, response, body) => {
@@ -79,7 +79,7 @@ exports.sendMessage = async function( message ) {
                 });
         }
     } catch (error){
-        TelegramError.error(`sendMessage ${error}`);
+        TelegramError.error(`telegram.sendMessage ${error}`);
     }
 
 };

@@ -1,3 +1,4 @@
 {
-  "mongodbConnectionString": "mongodb://mongodb:27017/triumf"
+  "mongodbConnectionString": "mongodb://mongodb:27017/triumf",
+  "telegramConnectionString": "http://telegramservice:8082"
 }

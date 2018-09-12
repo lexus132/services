@@ -71,10 +71,6 @@ function parseAndSaveBTCUSD(){
                 telegram.sendMessage(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
                 return StatsError.error(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
             }
-            if (!body || body.length < 2) {
-                telegram.sendMessage(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
-                return StatsError.error(`parseAndSaveBTCUSD Error: Body : ${JSON.stringify(JSON.parse(body))}`);
-            }
             body = JSON.parse(body) || {};
 
             if (!body[0].price_usd) {
@@ -217,10 +213,6 @@ function parseAndSaveUSDT() {
     );
 }
 
-
-parseAndSaveETHUSD();
-
-/*
 setInterval( () => {
     parseAndSaveETHUSD();
     parseAndSaveBTCUSD();
@@ -229,4 +221,5 @@ setInterval( () => {
     parseAndSaveBCHUSD();
     parseAndSaveUSDT();
 }, 5000);
+/*
 */
